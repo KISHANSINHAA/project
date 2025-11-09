@@ -145,36 +145,48 @@ elif app_mode == "30-Day Forecast":
         
         # Get unique products for dropdown selection
         products_list = list(pd.Series(store_data['product']).unique())
-        selected_product = st.selectbox("Select Product for Forecasting", products_list)
-        
-        # Filter data for selected product
-        product_data = store_data[store_data['product'] == selected_product]
+        # Add "All Products" option to the dropdown
+        products_list_with_all = ["All Products"] + products_list
+        selected_product = st.selectbox("Select Product for Forecasting", products_list_with_all)
         
         # Always show forecast without requiring button click
         with st.spinner("Generating forecast for next 30 days..."):
             try:
-                # For now, just show the existing data as a "forecast"
-                st.write("### 📊 30-Day Forecast Results:")
-                # Display first 15 rows
-                display_data = pd.DataFrame(product_data[['date', 'store', 'product', 'sales']])
-                st.dataframe(display_data.head(15))
-                
-                # Download button for forecast
-                csv_data = display_data.to_csv(index=False)
-                st.download_button(
-                    label="📥 Download Forecast as CSV",
-                    data=csv_data,
-                    file_name='30_day_forecast.csv',
-                    mime='text/csv'
-                )
-                
-                # Visualization - Individual product chart
+                # Visualization - Individual product chart or all products
                 st.markdown("<h3 class='sub-header'>📈 Forecast Visualization</h3>", unsafe_allow_html=True)
                 
-                if len(product_data) > 0:
-                    fig = px.line(product_data, x='date', y='sales',
-                                 title=f'Sales Trend for {selected_product}')
+                if selected_product == "All Products":
+                    # Show all products in the visualization
+                    fig = px.line(store_data, x='date', y='sales', color='product',
+                                 title='Sales Trend for All Products')
                     st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Show data table
+                    st.write("### 📊 Forecast Data for All Products:")
+                    st.dataframe(store_data[['date', 'store', 'product', 'sales']].head(20))
+                else:
+                    # Filter data for selected product
+                    product_data = store_data[store_data['product'] == selected_product]
+                    
+                    if len(product_data) > 0:
+                        fig = px.line(product_data, x='date', y='sales',
+                                     title=f'Sales Trend for {selected_product}')
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Show data table
+                        st.write(f"### 📊 Forecast Data for {selected_product}:")
+                        st.dataframe(product_data[['date', 'store', 'product', 'sales']].head(15))
+                    
+                        # Download button for forecast
+                        csv_data = product_data.to_csv(index=False)
+                        st.download_button(
+                            label="📥 Download Forecast as CSV",
+                            data=csv_data,
+                            file_name=f'30_day_forecast_{selected_product}.csv',
+                            mime='text/csv'
+                        )
+                    else:
+                        st.warning(f"No data available for {selected_product}")
                 
             except Exception as e:
                 st.error(f"Error generating forecast: {str(e)}")
