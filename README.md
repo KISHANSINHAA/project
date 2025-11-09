@@ -2,161 +2,93 @@
 
 A comprehensive retail forecasting solution with advanced ML algorithms, interactive dashboard, and API endpoints.
 
-## 🎯 Project Overview
+## 🛍️ Retail Demand Forecasting Dashboard
 
-This project forecasts retail demand for the next 30 days, identifies which products to stock, and provides actionable insights through an interactive dashboard. It uses advanced machine learning algorithms including AdaBoost and Gradient Boosting to provide accurate predictions.
+## 📋 Project Overview
+This project is a retail demand forecasting solution designed for CDAC students to learn advanced machine learning concepts. The application provides sales predictions, stock recommendations, and interactive visualizations to help retail businesses optimize their inventory management.
 
-## 🚀 Features
+## 🎯 Key Features
+- **30-Day Sales Forecasting**: Predict future sales for individual products or all products
+- **Stock Purchase Recommendations**: Get actionable insights on what products to buy and avoid
+- **Interactive Dashboard**: User-friendly interface with dropdown selections and visualizations
+- **Multiple ML Algorithms**: Uses AdaBoost and Gradient Boosting for accurate predictions
+- **Team Learning Focus**: Designed for teams of 3 members to enhance CV/CDAC projects
 
-- **Advanced ML Models**: AdaBoost, Gradient Boosting
-- **Interactive Dashboard**: Streamlit-based UI with 3D visualizations
-- **API Endpoints**: FastAPI for programmatic access
-- **Data Pipeline**: Complete preprocessing and training workflow
-- **Stock Recommendations**: Identifies products to buy and avoid with quantities
-- **30-Day Forecasting**: Predicts sales for the next month
+## 🚀 Quick Start
+1. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Run the Application**:
+   ```bash
+   python start_app.py
+   ```
+
+3. **Access the Dashboard**:
+   Open your browser and go to `http://localhost:8501`
 
 ## 📁 Project Structure
-
 ```
 retail-forecasting/
 ├── app/
-│   ├── api.py          # FastAPI endpoints
-│   └── dashboard.py    # Streamlit dashboard
+│   ├── dashboard.py          # Streamlit dashboard interface
+│   └── api.py               # API endpoints (if needed)
 ├── src/
-│   ├── data_preprocessing.py  # Data preparation
-│   ├── features.py     # Feature engineering
-│   ├── train_model.py  # Model training
-│   └── predict.py      # Prediction functions
+│   ├── data_preprocessing.py # Data preparation and cleaning
+│   ├── features.py          # Feature engineering
+│   ├── train_model.py       # Model training logic
+│   └── predict.py           # Prediction functions
 ├── data/
-│   ├── processed/      # Processed data
-│   └── sample_sales_data.csv  # Sample dataset
-├── artifacts/          # Trained models
-├── tests/              # Unit tests
-├── requirements.txt    # Python dependencies
-├── Dockerfile          # Docker configuration
-├── Jenkinsfile         # Jenkins pipeline
-├── projectfinalpipeline.groovy  # Specific Jenkins pipeline
-└── README.md
+│   ├── processed/           # Cleaned and processed data
+│   └── sample_sales_data.csv # Sample dataset
+├── artifacts/               # Trained models and feature information
+├── requirements.txt         # Python dependencies
+├── simple_train.py          # Model training script
+├── start_app.py             # Application startup script
+└── README.md                # This file
 ```
-
-## 🛠️ Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/KISHANSINHAA/project.git
-cd retail-forecasting
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-## ▶️ Usage
-
-### Run the Complete Pipeline
-
-```bash
-# Run preprocessing and training
-python run_complete_project.py
-```
-
-### Manual Execution
-
-1. **Data Preprocessing**:
-```bash
-python src/data_preprocessing.py
-```
-
-2. **Model Training**:
-```bash
-python simple_train.py
-```
-
-3. **Start Dashboard**:
-```bash
-streamlit run app/dashboard.py
-```
-
-4. **Start API Server**:
-```bash
-uvicorn app.api:app --reload
-```
-
-## 📊 Dashboard Features
-
-The Streamlit dashboard provides:
-
-- **Data Upload & Prediction**: Upload CSV data for sales predictions
-- **30-Day Forecast**: Generate sales forecasts for the next month
-- **Stock Recommendations**: Identify which products to buy and avoid with recommended quantities
-- **Model Insights**: Feature importance and model performance
-- **3D Visualizations**: Interactive 3D charts for data analysis
-
-## 🔌 API Endpoints
-
-The FastAPI server provides:
-
-- `POST /predict`: Make sales predictions
-- Interactive API documentation at `/docs`
 
 ## 🧠 Machine Learning Models
+The project implements multiple advanced ML algorithms:
+- **AdaBoost**: Adaptive Boosting for ensemble learning
+- **Gradient Boosting**: Sequential decision tree building
+- **Model Selection**: Automatic selection of best performing model based on RMSE
 
-This project implements multiple advanced ML algorithms:
+## 📊 Dashboard Features
+1. **30-Day Forecast**:
+   - Select store and product from dropdown menus
+   - View individual product trends or all products together
+   - Download forecast data as CSV
 
-- **AdaBoost**: Adaptive boosting algorithm
-- **Gradient Boosting**: Traditional gradient boosting regressor
+2. **Stock Recommendations**:
+   - Automatically generated "buy" and "avoid" lists
+   - Recommended quantities for high-demand products
+   - Clear reasoning for each recommendation
 
-The system automatically selects the best performing model based on RMSE evaluation.
+3. **Model Insights**:
+   - Performance metrics for different algorithms
+   - Feature importance visualization
 
-## 📈 Sample Dataset
+## 🛠️ Development Setup
+1. Clone the repository
+2. Install requirements: `pip install -r requirements.txt`
+3. Run data preprocessing: `python src/data_preprocessing.py`
+4. Train models: `python simple_train.py`
+5. Start dashboard: `python start_app.py`
 
-The project includes a sample retail dataset with:
-- Date information
-- Store identifiers
-- Product categories
-- Sales quantities
-- Pricing information
+## 📈 Dataset Information
+- Uses a smaller sample dataset (~7,240 rows) instead of large 7.6GB files
+- 75% train / 25% test split for model evaluation
+- Synthetic retail data with trend, seasonality, and randomness
 
-## 👥 Team Project
+## 👥 Team Learning Benefits
+This project helps CDAC teams of 3 members to:
+- Learn advanced ML algorithms (AdaBoost, Gradient Boosting)
+- Understand data preprocessing and feature engineering
+- Gain experience with Streamlit dashboard development
+- Practice model evaluation and selection techniques
+- Enhance CV with a complete ML pipeline project
 
-This project is designed for a team of 3 members to learn:
-- Advanced ML concepts
-- Data preprocessing techniques
-- Feature engineering
-- Model evaluation
-- Dashboard development
-- API development
-
-Perfect for CDAC projects and CV building!
-
-## 🐳 Docker Deployment
-
-Build and run the Docker container:
-
-```bash
-docker build -t retail-forecasting-app .
-docker run -p 8501:8501 retail-forecasting-app
-```
-
-## 🔄 Jenkins Pipeline
-
-The project includes Jenkins pipeline configurations for CI/CD:
-- `Jenkinsfile`: Main pipeline configuration
-- `projectfinalpipeline.groovy`: Specific pipeline for the project
-
-## 📝 Requirements
-
-- Python 3.8+
-- See `requirements.txt` for complete dependencies
-
-## 🏁 Getting Started
-
-1. Run the preprocessing script to generate sample data
-2. Train the models using the training script
-3. Launch the dashboard to interact with predictions
-4. Use the API for programmatic access
-
-## 🤝 Contributing
-
-This project is designed as a learning tool for teams. Feel free to extend and modify it for your specific needs.
+## 📞 Support
+For issues and questions, please contact the project maintainers.
