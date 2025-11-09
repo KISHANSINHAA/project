@@ -45,6 +45,7 @@ st.markdown("""
         width: 100%;
     }
     .buy-card {
+        color: rgb(26 22 131);
         background-color: #e8f5e9;
         border-left: 5px solid #4CAF50;
         padding: 1rem;
@@ -196,106 +197,110 @@ elif app_mode == "Stock Recommendations":
         store_data = sample_data[sample_data['store'] == selected_store]
         
         # Always show recommendations without requiring button click
-        with st.spinner("Analyzing stock needs..."):
-            try:
-                # Calculate average sales per product
-                avg_sales = store_data.groupby('product')['sales'].mean().reset_index()
-                avg_sales = avg_sales.sort_values('sales', ascending=False)
-                
-                # Calculate total sales per product for quantity recommendations
-                total_sales = store_data.groupby('product')['sales'].sum().reset_index()
-                total_sales = total_sales.sort_values('sales', ascending=False)
-                
-                # Simple recommendation: top 50% as "buy", bottom 50% as "avoid"
-                threshold = avg_sales['sales'].median()
-                needs_buying = avg_sales[avg_sales['sales'] >= threshold]
-                dont_buy = avg_sales[avg_sales['sales'] < threshold]
-                
-                # Calculate recommended quantities (30 days of average sales)
-                needs_buying_copy = needs_buying.copy()
-                needs_buying_copy['recommended_quantity'] = (needs_buying_copy['sales'] * 30).astype(int)
-                needs_buying_copy['reason'] = 'High demand product with consistent sales'
-                
-                dont_buy_copy = dont_buy.copy()
-                dont_buy_copy['reason'] = 'Low demand product with inconsistent sales'
-                
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown("<div class='metric-card'><h3 style='color: green;'>✅ Products to Buy</h3></div>", unsafe_allow_html=True)
-                    for _, row in needs_buying_copy.iterrows():
-                        st.markdown(f"""
-                        <div class="buy-card">
-                            <h4>{row['product']}</h4>
-                            <p><strong>Average Daily Sales:</strong> {row['sales']:.1f} units</p>
-                            <p><strong>Recommended 30-Day Stock:</strong> {row['recommended_quantity']} units</p>
-                            <p><strong>Reason:</strong> {row['reason']}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-                with col2:
-                    st.markdown("<div class='metric-card'><h3 style='color: red;'>❌ Products to Avoid</h3></div>", unsafe_allow_html=True)
-                    for _, row in dont_buy_copy.iterrows():
-                        st.markdown(f"""
-                        <div class="avoid-card">
-                            <h4>{row['product']}</h4>
-                            <p><strong>Average Daily Sales:</strong> {row['sales']:.1f} units</p>
-                            <p><strong>Reason:</strong> {row['reason']}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-                # Summary statistics
-                st.markdown("<h3 class='sub-header'>📊 Summary</h3>", unsafe_allow_html=True)
-                col1, col2, col3 = st.columns(3)
-                col1.metric("Products to Buy", len(needs_buying), "High demand")
-                col2.metric("Products to Avoid", len(dont_buy), "Low demand")
-                col3.metric("Total Products", len(avg_sales), "Analyzed")
-                
-                # Visualization - 2D Bar Chart instead of 3D
-                st.markdown("<h3 class='sub-header'>📊 Stock Recommendation Analysis</h3>", unsafe_allow_html=True)
-                
-                # Bar chart comparison
-                all_products = pd.concat([needs_buying, dont_buy])
-                # Create recommendation column using list comprehension
-                needs_buying_list = list(pd.Series(needs_buying['product']).unique())
-                recommendation_list = []
-                for product in all_products['product']:
-                    if product in needs_buying_list:
-                        recommendation_list.append('Buy')
-                    else:
-                        recommendation_list.append('Avoid')
-                all_products = all_products.copy()
-                all_products['Recommendation'] = recommendation_list
-                
-                # Ensure product names are displayed properly
-                fig1 = px.bar(all_products, x='product', y='sales',
-                             title='Product Demand Analysis',
-                             color='Recommendation',
-                             labels={'sales': 'Average Daily Sales'})
-                fig1.update_layout(xaxis_tickangle=-45)
-                st.plotly_chart(fig1, use_container_width=True)
-                
-                # 2D Scatter plot with proper product names
-                st.markdown("<h3 class='sub-header'>🧬 Stock Analysis (2D)</h3>", unsafe_allow_html=True)
-                fig2 = px.scatter(all_products, x=all_products.index, y='sales',
-                                 size='sales', color='Recommendation',
-                                 title='Stock Recommendation Analysis (2D)',
-                                 labels={'sales': 'Average Daily Sales', 'x': 'Products'})
-                # Update x-axis labels to show product names
-                fig2.update_layout(
-                    xaxis=dict(
-                        tickmode='array',
-                        tickvals=list(range(len(all_products))),
-                        ticktext=list(pd.Series(all_products['product']).unique())
+        # Show recommendations immediately when store is selected
+        if selected_store:
+            with st.spinner("Analyzing stock needs..."):
+                try:
+                    # Calculate average sales per product
+                    avg_sales = store_data.groupby('product')['sales'].mean().reset_index()
+                    avg_sales = avg_sales.sort_values('sales', ascending=False)
+                    
+                    # Calculate total sales per product for quantity recommendations
+                    total_sales = store_data.groupby('product')['sales'].sum().reset_index()
+                    total_sales = total_sales.sort_values('sales', ascending=False)
+                    
+                    # Simple recommendation: top 50% as "buy", bottom 50% as "avoid"
+                    threshold = avg_sales['sales'].median()
+                    needs_buying = avg_sales[avg_sales['sales'] >= threshold]
+                    dont_buy = avg_sales[avg_sales['sales'] < threshold]
+                    
+                    # Calculate recommended quantities (30 days of average sales)
+                    needs_buying_copy = needs_buying.copy()
+                    needs_buying_copy['recommended_quantity'] = (needs_buying_copy['sales'] * 30).astype(int)
+                    needs_buying_copy['reason'] = 'High demand product with consistent sales'
+                    
+                    dont_buy_copy = dont_buy.copy()
+                    dont_buy_copy['reason'] = 'Low demand product with inconsistent sales'
+                    
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown("<div class='metric-card'><h3 style='color: green;'>✅ Products to Buy</h3></div>", unsafe_allow_html=True)
+                        # Display product names clearly
+                        for idx, row in needs_buying_copy.iterrows():
+                            st.markdown(f"""
+                            <div class="buy-card">
+                                <h4>📦 {row['product']}</h4>
+                                <p><strong>📈 Average Daily Sales:</strong> {row['sales']:.1f} units</p>
+                                <p><strong>📊 Recommended 30-Day Stock:</strong> {row['recommended_quantity']} units</p>
+                                <p><strong>ℹ️ Reason:</strong> {row['reason']}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        st.markdown("<div class='metric-card'><h3 style='color: red;'>❌ Products to Avoid</h3></div>", unsafe_allow_html=True)
+                        # Display product names clearly
+                        for idx, row in dont_buy_copy.iterrows():
+                            st.markdown(f"""
+                            <div class="avoid-card">
+                                <h4>📦 {row['product']}</h4>
+                                <p><strong>📈 Average Daily Sales:</strong> {row['sales']:.1f} units</p>
+                                <p><strong>ℹ️ Reason:</strong> {row['reason']}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    # Summary statistics
+                    st.markdown("<h3 class='sub-header'>📊 Summary</h3>", unsafe_allow_html=True)
+                    col1, col2, col3 = st.columns(3)
+                    col1.metric("✅ Products to Buy", len(needs_buying), "High demand")
+                    col2.metric("❌ Products to Avoid", len(dont_buy), "Low demand")
+                    col3.metric("📋 Total Products", len(avg_sales), "Analyzed")
+                    
+                    # Visualization - 2D Bar Chart instead of 3D
+                    st.markdown("<h3 class='sub-header'>📊 Stock Recommendation Analysis</h3>", unsafe_allow_html=True)
+                    
+                    # Bar chart comparison
+                    all_products = pd.concat([needs_buying, dont_buy])
+                    # Create recommendation column using list comprehension
+                    needs_buying_list = list(pd.Series(needs_buying['product']).unique())
+                    recommendation_list = []
+                    for product in all_products['product']:
+                        if product in needs_buying_list:
+                            recommendation_list.append('Buy')
+                        else:
+                            recommendation_list.append('Avoid')
+                    all_products = all_products.copy()
+                    all_products['Recommendation'] = recommendation_list
+                    
+                    # Ensure product names are displayed properly
+                    fig1 = px.bar(all_products, x='product', y='sales',
+                                 title='Product Demand Analysis',
+                                 color='Recommendation',
+                                 labels={'sales': 'Average Daily Sales'})
+                    fig1.update_layout(xaxis_tickangle=-45)
+                    st.plotly_chart(fig1, use_container_width=True)
+                    
+                    # 2D Scatter plot with proper product names
+                    st.markdown("<h3 class='sub-header'>🧬 Stock Analysis (2D)</h3>", unsafe_allow_html=True)
+                    fig2 = px.scatter(all_products, x=all_products.index, y='sales',
+                                     size='sales', color='Recommendation',
+                                     title='Stock Recommendation Analysis (2D)',
+                                     labels={'sales': 'Average Daily Sales', 'x': 'Products'})
+                    # Update x-axis labels to show product names
+                    fig2.update_layout(
+                        xaxis=dict(
+                            tickmode='array',
+                            tickvals=list(range(len(all_products))),
+                            ticktext=list(pd.Series(all_products['product']).unique())
+                        )
                     )
-                )
-                fig2.update_layout(xaxis_tickangle=-45)
-                st.plotly_chart(fig2, use_container_width=True)
-                
-            except Exception as e:
-                st.error(f"Error generating recommendations: {str(e)}")
-                import traceback
-                traceback.print_exc()
+                    fig2.update_layout(xaxis_tickangle=-45)
+                    st.plotly_chart(fig2, use_container_width=True)
+                    
+                except Exception as e:
+                    st.error(f"Error generating recommendations: {str(e)}")
+                    import traceback
+                    traceback.print_exc()
                 
     except FileNotFoundError:
         st.warning("No processed data found. Please run data preprocessing first.")
