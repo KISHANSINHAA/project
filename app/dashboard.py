@@ -52,6 +52,7 @@ st.markdown("""
         margin: 1rem 0;
     }
     .avoid-card {
+        color: rgb(26 22 131);
         background-color: #ffebee;
         border-left: 5px solid #f44336;
         padding: 1rem;
