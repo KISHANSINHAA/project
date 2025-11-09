@@ -243,7 +243,7 @@ elif app_mode == "Stock Recommendations":
                         for idx, row in needs_buying_copy.iterrows():
                             st.markdown(f"""
                             <div class="buy-card">
-                                <h4>📦 {row['product']}</h4>
+                                <h4 style="color: green;">📦 {row['product']}</h4>
                                 <p><strong>📈 Average Daily Sales:</strong> {row['sales']:.1f} units</p>
                                 <p><strong>📊 Recommended 30-Day Stock:</strong> {row['recommended_quantity']} units</p>
                                 <p><strong>ℹ️ Reason:</strong> {row['reason']}</p>
@@ -256,7 +256,7 @@ elif app_mode == "Stock Recommendations":
                         for idx, row in dont_buy_copy.iterrows():
                             st.markdown(f"""
                             <div class="avoid-card">
-                                <h4>📦 {row['product']}</h4>
+                                <h4 style="color: red;">📦 {row['product']}</h4>
                                 <p><strong>📈 Average Daily Sales:</strong> {row['sales']:.1f} units</p>
                                 <p><strong>ℹ️ Reason:</strong> {row['reason']}</p>
                             </div>
