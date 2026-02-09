@@ -1,6 +1,5 @@
-# 📈 Retail Sales Forecasting (Machine Learning Project)
+# 📈 Retail Sales Forecasting
 
-A production-grade retail sales forecasting system built using Python and Machine Learning.
 The project demonstrates an end-to-end ML workflow — from raw data ingestion and feature engineering to model evaluation and an interactive Streamlit dashboard.
 
 ## 🚀 Project Overview
@@ -136,9 +135,6 @@ python src/evaluate_models.py
   - Inventory optimization
   - Revenue trend analysis
 
-## 🎤 Interview-Ready Summary
-
-"I built a leakage-free retail revenue forecasting pipeline using Random Forest and XGBoost. By focusing on advanced feature engineering — including long-term lags, rolling statistics, and momentum — the model achieved an R² of 0.93. I deployed results using a Streamlit dashboard for business-friendly interpretation."
 
 ## 🧰 Tech Stack
 
