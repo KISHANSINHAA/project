@@ -127,34 +127,3 @@ ax.legend()
 ax.grid(alpha=0.3)
 
 st.pyplot(fig)
-
-# -------------------------------------------------
-# Business Interpretation
-# -------------------------------------------------
-st.subheader("💼 Business Interpretation")
-
-st.markdown(
-    f"""
-    - The selected model explains **{best_row['R2']*100:.1f}%** of the variation
-      in daily revenue.
-    - Average prediction error is approximately **{best_row['MAE']:.0f} units/day**.
-    - The 30-day forecast is generated using **recursive multi-step forecasting**.
-    - Forecast uncertainty increases with horizon, which is expected in ML-based forecasting.
-    """
-)
-
-# -------------------------------------------------
-# Key Takeaways
-# -------------------------------------------------
-st.subheader("✅ Key Takeaways")
-
-st.markdown(
-    """
-    - Feature engineering had a greater impact than adding more models.
-    - Lag and rolling features capture retail demand cycles effectively.
-    - XGBoost performs best due to its ability to model nonlinear patterns.
-    - The system is **leakage-free, reproducible, and production-ready**.
-    """
-)
-
-st.caption("Built using Python, Pandas, Scikit-learn, XGBoost, and Streamlit")
