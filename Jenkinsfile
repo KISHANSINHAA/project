@@ -12,7 +12,7 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/KISHANSINHAA/project.git'
+                git branch: 'master', url: 'https://github.com/KISHANSINHAA/project.git'
             }
         }
 
